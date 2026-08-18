@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+env/
+
+# Local/generated data
+temp/
+output/
+*.languages.auto.txt
+
+# Local configuration overrides
+config.py
+config_local.py
+
+# Editors / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Test artifacts
+*.log
