@@ -2,6 +2,12 @@
 
 WhisperMultilingual is a Windows command-line tool for transcribing videos that switch between multiple spoken languages.
 
+The project was developed after the author encountered a practical limitation when transcribing multilingual spiritual discourses: the Whisper transcription engine did not reliably detect language changes automatically. As a result, parts of a multilingual recording could be transcribed in the wrong language after a language switch.
+
+WhisperMultilingual addresses this problem by detecting language changes before transcription and then processing the individual language regions separately.
+
+The project was developed with the assistance of artificial intelligence (AI), which was used throughout the development process for programming, debugging and improving the workflow.
+
 Its main feature is **automatic language-change detection**. The detected language markers are written to a `.languages.auto.txt` file. These markers are then used to split the video into language-specific audio segments, which are transcribed separately with Faster-Whisper-XXL.
 
 ## Features
@@ -14,7 +20,8 @@ Its main feature is **automatic language-change detection**. The detected langua
 - Single-video mode
 - Batch processing of all videos in a configured folder
 - Separate SRT files are merged into one final subtitle file
-- Tested with German/English multilingual Sohbats and Khutbas
+- Language files can also be used directly as YouTube chapter timecodes
+- Tested with German/English multilingual spiritual discourses
 
 ## Requirements
 
@@ -45,14 +52,22 @@ Install/download FFmpeg and Faster-Whisper-XXL separately.
 
 ## Configuration
 
-All machine-specific paths are configured in **`config.py`**. You do not need to change the Python source code for normal setup.
+Copy `config.example.py` to `config.py` and edit `config.py` with your local paths and settings.
+
+`config.py` is intentionally not included in the Git repository because it contains machine-specific paths.
+
+You do not need to change the Python source code for normal setup.
 
 At minimum, edit:
 
 ```python
 VIDEO_DIR = Path(r"C:\Path\to\Videos")
 LANGUAGE_DIR = Path(r"C:\Path\to\LanguageFiles")
-FFMPEG_EXE = Path(r"C:\Path\to\ffmpeg.exe")
+
+FFMPEG_EXE = Path(
+    r"C:\Path\to\ffmpeg.exe"
+)
+
 WHISPER_EXE = Path(
     r"C:\Path\to\Purfview-Faster-Whisper-XXL\faster-whisper-xxl.exe"
 )
@@ -60,29 +75,53 @@ WHISPER_EXE = Path(
 
 `TEMP_DIR` and `OUTPUT_DIR` default to folders inside the project directory, but they can also be changed in `config.py`.
 
-### Language detection
+## Language detection
 
-The languages considered by the automatic detector are configured here:
+The example configuration enables German and English, which are the languages used for testing.
+
+Additional languages can be enabled by uncommenting or adding entries to `DETECTION_LANGUAGES`:
 
 ```python
 DETECTION_LANGUAGES = {
     "de": "Deutsch",
     "en": "English",
-    "ar": "Arabic",
-    "it": "Italiano",
+
+    # Optional: additional languages
+    # "fr": "Français",
+    # "es": "Español",
+    # "it": "Italiano",
+    # "ar": "Arabic",
 }
 ```
 
-Add or remove Whisper language codes as needed. The example configuration enables German, English, Arabic and Italian.
+The entries use Whisper language codes. Add or remove languages as required.
 
-Two additional settings control detection:
+Two settings control the basic language detection:
 
 ```python
 LANGUAGE_THRESHOLD = 0.60
 MIN_LANGUAGE_DURATION = 15
 ```
 
-`MIN_LANGUAGE_DURATION` is used to ignore short language insertions. For example, a short Arabic prayer passage can be removed manually from the generated language file when it should not be part of the transcription workflow.
+`LANGUAGE_THRESHOLD` defines the minimum probability required for a language to be considered a valid observation.
+
+`MIN_LANGUAGE_DURATION` defines the minimum duration required for a detected language region to be retained. Short language insertions below this duration are ignored.
+
+The detector also uses configurable sliding-window and confirmation settings:
+
+```python
+LANGUAGE_WINDOW = 5
+LANGUAGE_STEP = 2
+LANGUAGE_CONFIRM_WINDOWS = 3
+```
+
+These settings control the size and movement of the audio analysis windows and how many consecutive observations are required to confirm a language change.
+
+## Initial prompt
+
+The `INITIAL_PROMPT` can contain vocabulary that is useful for the subject of the videos. The example configuration uses neutral terms related to spirituality and psychology.
+
+Adapt this list to the subject of your own videos if necessary.
 
 ## Usage
 
@@ -98,7 +137,12 @@ python whisper_multilingual.py --help
 python whisper_multilingual.py myvideo.mp4
 ```
 
-The application looks for a manual language file first: next to the video, then in `LANGUAGE_DIR`. It then looks for an existing automatic language file and only runs automatic language detection when necessary.
+The application looks for a manual language file first:
+
+1. next to the video
+2. then in `LANGUAGE_DIR`
+
+It then looks for an existing automatic language file and only runs automatic language detection when necessary.
 
 ### Use a specific language file
 
@@ -135,6 +179,31 @@ Supported language names may be written using the configured language code or co
 0:00 Deutsch
 6:47 English
 ```
+
+Manual language files use the `.languages.txt` suffix.
+
+Automatically generated language files use the `.languages.auto.txt` suffix.
+
+If a manually checked `.languages.txt` exists, it takes precedence over automatic detection.
+
+## Using language files for YouTube chapters
+
+The generated language file can also be used as a simple source for YouTube chapter timecodes.
+
+The timestamps can be copied **1:1 into the YouTube video description** if you want to create chapter markers based on the detected language changes.
+
+For example:
+
+```text
+0:00 DE
+6:47 EN
+8:09 DE
+11:46 EN
+```
+
+You can rename or expand the chapter titles afterwards if desired.
+
+This makes the `.languages.txt` / `.languages.auto.txt` file useful not only for the transcription workflow but also for preparing multilingual YouTube videos.
 
 ## Generated files
 
@@ -173,9 +242,47 @@ If a manually checked `.languages.txt` exists, it takes precedence over automati
 
 ## Notes on automatic detection
 
-The detector analyzes overlapping short audio windows and confirms a language change only after repeated observations. Short interruptions are filtered using `MIN_LANGUAGE_DURATION`.
+The detector analyzes overlapping short audio windows and confirms a language change only after repeated observations.
 
-The detector is intended to find **spoken-language regions**, not to decide whether a given region should be translated. For special cases such as a prayer in Arabic, the generated `.languages.auto.txt` can be edited manually before transcription.
+Short interruptions are filtered using `MIN_LANGUAGE_DURATION`.
+
+The detector is intended to find **spoken-language regions**, not to decide whether a given region should be translated or transcribed.
+
+For special cases such as a song or prayer that should not be transcribed, `.languages.auto.txt` can be edited manually before transcription.
+
+For example, an automatically detected language region can be removed or modified in the language file before the transcription process is started.
+
+This allows the automatic detection to serve as a starting point while still giving the user full control over the final language segmentation.
+
+## Manual language files
+
+Automatic language detection is optional.
+
+A manually prepared `.languages.txt` file can always be used instead. This is useful when:
+
+- the automatic detection is not accurate enough
+- the recording contains songs or prayers
+- very short language changes should be handled manually
+- a particular section should be assigned to a specific language
+- the user already knows the exact language structure of the recording
+
+The manual file takes precedence over `.languages.auto.txt`.
+
+## Why WhisperMultilingual?
+
+Standard Whisper-based transcription can work very well with multilingual audio, but automatic language detection may not reliably follow language changes within a single recording.
+
+This can be particularly problematic in recordings where the speaker switches repeatedly between languages.
+
+WhisperMultilingual separates the language-detection step from the transcription step:
+
+1. Detect the spoken languages.
+2. Determine where language changes occur.
+3. Split the audio into language-specific regions.
+4. Transcribe each region with the appropriate language.
+5. Merge the resulting subtitle files.
+
+This approach makes multilingual transcription more predictable and gives the user the opportunity to review and correct the detected language structure before transcription.
 
 ## License
 

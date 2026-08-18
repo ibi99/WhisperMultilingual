@@ -43,12 +43,14 @@ DEVICE = "cuda"
 BEAM_SIZE = 5
 CONDITION_ON_PREVIOUS_TEXT = True
 
+# Optional vocabulary to help Whisper recognize
+# domain-specific terms. Adapt this list to the
+# subject of your videos.
 INITIAL_PROMPT = (
-    "Allah, Rasulullah, Sheikh, Mawlana, Murid, Tariqa, "
-    "Naqshbandiyya, Dhikr, Dhikrullah, Awliya, Qur'an, "
-    "Hadith, Bismillahi r-Rahmani r-Rahim, Astaghfirullah, "
-    "InshaAllah, MashaAllah, SubhanAllah, "
-    "Alhamdulillah, Allahu Akbar, Ya Wadud"
+    "spirituality, meditation, mindfulness, consciousness, "
+    "psychology, inner peace, spiritual development, "
+    "Achtsamkeit, Bewusstsein, Meditation, Spiritualität, "
+    "Selbstentwicklung, innere Ruhe, Persönlichkeit"
 )
 
 VAD = True
@@ -58,14 +60,21 @@ WORD_TIMESTAMPS = False
 # ----------------------------------------------------------
 # Automatic language detection
 # ----------------------------------------------------------
-# Add/remove languages as required.
+# Add or remove languages as required.
 # The codes are Whisper language codes.
+#
+# German and English are the languages used for testing.
+# Additional languages can be enabled as needed.
 
 DETECTION_LANGUAGES = {
     "de": "Deutsch",
     "en": "English",
-    "ar": "Arabic",
-    "it": "Italiano",
+
+    # Optional: additional languages
+    # "fr": "Français",
+    # "es": "Español",
+    # "it": "Italiano",
+    # "ar": "Arabic",
 }
 
 # Minimum probability for a configured language to be
