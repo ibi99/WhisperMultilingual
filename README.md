@@ -284,6 +284,15 @@ WhisperMultilingual separates the language-detection step from the transcription
 
 This approach makes multilingual transcription more predictable and gives the user the opportunity to review and correct the detected language structure before transcription.
 
+## Support
+
+WhisperMultilingual is free and open source.
+
+If you find the project useful and would like to support its
+continued development, you can buy the author a coffee via PayPal.
+
+[![Support the author](https://img.shields.io/badge/☕_Support_the_author-PayPal-0070ba)](https://paypal.me/FriederRosenfelder)
+
 ## License
 
 WhisperMultilingual is released under the MIT License. See `LICENSE`.
