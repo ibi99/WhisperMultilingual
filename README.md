@@ -1,5 +1,13 @@
 # WhisperMultilingual
 
+<p align="center">
+  <img src="assets/logo-banner.png" alt="WhisperMultilingual" width="900">
+</p>
+
+<p align="center">
+  <strong>Multilingual video transcription</strong>
+</p>
+
 WhisperMultilingual is a Windows command-line tool for transcribing videos that switch between multiple spoken languages.
 
 The project was developed after the author encountered a practical limitation when transcribing multilingual spiritual discourses: the Whisper transcription engine did not reliably detect language changes automatically. As a result, parts of a multilingual recording could be transcribed in the wrong language after a language switch.

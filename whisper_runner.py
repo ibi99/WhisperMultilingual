@@ -54,6 +54,8 @@ def build_whisper_command(
         "--language", language,
         "--model", config.MODEL,
         "--beam_size", str(config.BEAM_SIZE),
+        "--max_line_width", str(config.MAX_LINE_WIDTH),
+        "--max_line_count", str(config.MAX_LINE_COUNT),
         "--condition_on_previous_text",
         str(config.CONDITION_ON_PREVIOUS_TEXT),
         "--initial_prompt",

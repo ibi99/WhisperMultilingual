@@ -43,6 +43,10 @@ DEVICE = "cuda"
 BEAM_SIZE = 5
 CONDITION_ON_PREVIOUS_TEXT = True
 
+# Subtitle formatting
+MAX_LINE_WIDTH = 42
+MAX_LINE_COUNT = 2
+
 # Optional vocabulary to help Whisper recognize
 # domain-specific terms. Adapt this list to the
 # subject of your videos.
