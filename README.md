@@ -1,7 +1,7 @@
 # WhisperMultilingual
 
 <p align="center">
-  <img src="assets/logo-banner.png" alt="WhisperMultilingual" width="900">
+  <img src="assets/logo-banner.jpg" alt="WhisperMultilingual" width="900">
 </p>
 
 <p align="center">
