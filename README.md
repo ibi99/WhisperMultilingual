@@ -8,7 +8,7 @@ WhisperMultilingual addresses this problem by detecting language changes before 
 
 The project was developed with the assistance of artificial intelligence (AI), which was used throughout the development process for programming, debugging and improving the workflow.
 
-Its main feature is **automatic language-change detection**. The detected language markers are written to a `.languages.auto.txt` file. These markers are then used to split the video into language-specific audio segments, which are transcribed separately with Faster-Whisper-XXL.
+Its main feature is **automatic language-change detection**. The detected language markers are written to a `.languages.auto.txt` file. These markers are then used to split the video into language-specific audio segments, which are transcribed separately with Faster-Whisper-XXL. The resulting SRT files are then merged back together into a single final subtitle file, preserving the original timing and sequence of the video.
 
 ## Features
 
@@ -122,6 +122,14 @@ These settings control the size and movement of the audio analysis windows and h
 The `INITIAL_PROMPT` can contain vocabulary that is useful for the subject of the videos. The example configuration uses neutral terms related to spirituality and psychology.
 
 Adapt this list to the subject of your own videos if necessary.
+
+### Subtitle formatting
+
+The maximum line length and the maximum number of lines per subtitle can be configured in `config.py`:
+
+```python
+MAX_LINE_WIDTH = 42
+MAX_LINE_COUNT = 2
 
 ## Usage
 
@@ -292,6 +300,13 @@ If you find the project useful and would like to support its
 continued development, you can buy the author a coffee via PayPal.
 
 [![Support the author](https://img.shields.io/badge/☕_Support_the_author-PayPal-0070ba)](https://paypal.me/FriederRosenfelder)
+
+## Community
+
+Have a question, suggestion or idea for WhisperMultilingual?
+
+Visit the [GitHub Discussions](../../discussions) to ask questions,
+share your experience or suggest improvements.
 
 ## License
 
